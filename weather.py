@@ -37,5 +37,27 @@ async def get_forecast(latitude: float, longitude: float) -> str:
 
     return await handle.result()
 
+
+@mcp.tool()
+async def start_waiting_workflow(workflow_id: str, message: str) -> str:
+    """Start a workflow that will wait for a completion signal."""
+    client = await get_temporal_client()
+    await client.start_workflow(
+        workflow="WaitForSignalWorkflow",
+        args=[message],
+        id=workflow_id,
+        task_queue="weather-task-queue",
+    )
+    return f"Workflow {workflow_id} started"
+
+
+@mcp.tool()
+async def send_signal(workflow_id: str, value: str) -> str:
+    """Send the completion signal to a running workflow."""
+    client = await get_temporal_client()
+    handle = client.get_workflow_handle(workflow_id)
+    await handle.signal("complete", value)
+    return f"Signal sent to {workflow_id}"
+
 if __name__ == "__main__":
     mcp.run(transport='stdio')

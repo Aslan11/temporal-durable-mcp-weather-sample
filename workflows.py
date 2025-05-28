@@ -79,3 +79,26 @@ class GetForecastWorkflow:
                     """
             forecasts.append(forecast)
         return "\n---\n".join(forecasts)
+
+# ---------------------------------------------------------------------------
+# Workflow that waits for an external signal to finish.
+# ---------------------------------------------------------------------------
+
+@workflow.defn
+class WaitForSignalWorkflow:
+    """Simple workflow that waits for a signal to complete."""
+
+    def __init__(self) -> None:
+        self._signal_value: str | None = None
+
+    @workflow.run
+    async def run(self, message: str) -> str:
+        """Run the workflow and wait for ``complete`` signal."""
+        workflow.logger.info(f"Started WaitForSignalWorkflow: {message}")
+        await workflow.wait_condition(lambda: self._signal_value is not None)
+        return self._signal_value or ""
+
+    @workflow.signal
+    async def complete(self, value: str) -> None:
+        """Signal handler that sets the value for completion."""
+        self._signal_value = value

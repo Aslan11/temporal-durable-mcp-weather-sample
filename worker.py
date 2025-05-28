@@ -4,7 +4,7 @@ import asyncio
 from temporalio.client import Client
 from temporalio.worker import Worker
 
-from workflows import GetAlertsWorkflow, GetForecastWorkflow
+from workflows import GetAlertsWorkflow, GetForecastWorkflow, WaitForSignalWorkflow
 from activities import make_nws_request
 
 async def main():
@@ -15,7 +15,7 @@ async def main():
     worker = Worker(
         client,
         task_queue="weather-task-queue",
-        workflows=[GetAlertsWorkflow, GetForecastWorkflow],
+        workflows=[GetAlertsWorkflow, GetForecastWorkflow, WaitForSignalWorkflow],
         activities=[make_nws_request],  # Can register more activities here as needed
     )
     print("Worker started. Listening for workflows...")

@@ -62,7 +62,8 @@ class GetForecastWorkflow:
             "make_nws_request",
             forecast_url,
             schedule_to_close_timeout=timedelta(seconds=40),
-            retry_policy=dict(),
+            # Use the same retry policy as other network calls
+            retry_policy=retry_policy,
         )
         if not forecast_data:
             return "Unable to fetch detailed forecast."

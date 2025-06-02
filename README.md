@@ -45,3 +45,22 @@ The purpose of this repo is to demonstrate how easy it is to leverage workflows 
        ```
    - Validate that the tools exposed by the server (`get_alerts`, `get_forecast`) show up in `Search and Tools` by clicking the slider icon in the chat box of Claude for Desktop
 9. Ask Claude for any weather alerts and the forecast for a particular city - it should leverage the tools. If it doesn't, try prompting it again encouraging it to use MCP tools that it has access to.
+
+### Results
+Here we can see Claude is using the tools intelligently to look for weather alerts while getting me weather information:
+
+![Claude MCP Example](./assets/claude-mcp-weather-alert.png)
+
+
+#### What's Cool About This
+This demonstrates how tools in MCP can be implemented as workflows, adding durability.
+Per Claude:
+> Traditional MCP tool implementations are like having a single phone conversation - if the line cuts out at any point, you lose everything and have to start over from scratch. When an AI agent is performing complex, multi-step operations (like processing a large dataset, coordinating multiple API calls, or handling a lengthy business process), a single failure anywhere in the chain means complete failure.
+
+![MCP API Example](./assets/mcp-api-failure.png)
+
+>Temporal workflows act like a detailed journal that remembers exactly where you left off. Think of it as having a conversation with someone who takes meticulous notes - even if you both get interrupted and come back hours later, you can pick up exactly where you left off without missing a beat.
+
+![MCP Tools As Workflows Example](./assets/mcp_tools-as-workflows.png)
+
+This demonstrates what we're calling "tools as workflows" - a tool is implemented as a Temporal Workflow, with the benefits of durability, state management, and retries built in.

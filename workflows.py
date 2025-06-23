@@ -14,6 +14,7 @@ retry_policy = RetryPolicy(
 
 NWS_API_BASE = "https://api.weather.gov"
 
+
 def format_alert(feature: dict) -> str:
     props = feature["properties"]
     return f"""
@@ -23,6 +24,7 @@ Severity: {props.get('severity', 'Unknown')}
 Description: {props.get('description', 'No description available')}
 Instructions: {props.get('instruction', 'No specific instructions provided')}
 """
+
 
 @workflow.defn
 class GetAlertsWorkflow:
@@ -35,13 +37,14 @@ class GetAlertsWorkflow:
             schedule_to_close_timeout=timedelta(seconds=40),
             retry_policy=retry_policy,  # Customize as needed
         )
-        
+
         if not data or "features" not in data:
             return "Unable to fetch alerts or no alerts found."
         if not data["features"]:
             return "No active alerts for this state."
         alerts = [format_alert(feature) for feature in data["features"]]
         return "\n---\n".join(alerts)
+
 
 @workflow.defn
 class GetForecastWorkflow:
@@ -80,9 +83,11 @@ class GetForecastWorkflow:
             forecasts.append(forecast)
         return "\n---\n".join(forecasts)
 
+
 # ---------------------------------------------------------------------------
 # Workflow that waits for an external signal to finish.
 # ---------------------------------------------------------------------------
+
 
 @workflow.defn
 class WaitForSignalWorkflow:

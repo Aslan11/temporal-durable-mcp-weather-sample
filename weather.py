@@ -8,11 +8,13 @@ mcp = FastMCP("weather")
 # Temporal client setup (do this once, then reuse)
 temporal_client = None
 
+
 async def get_temporal_client():
     global temporal_client
     if not temporal_client:
         temporal_client = await Client.connect("localhost:7233")
     return temporal_client
+
 
 @mcp.tool()
 async def get_alerts(state: str) -> str:
@@ -21,9 +23,10 @@ async def get_alerts(state: str) -> str:
         "GetAlertsWorkflow",
         state,
         id=f"alerts-{state.lower()}",
-        task_queue="weather-task-queue"
+        task_queue="weather-task-queue",
     )
     return await handle.result()
+
 
 @mcp.tool()
 async def get_forecast(latitude: float, longitude: float) -> str:
@@ -59,5 +62,6 @@ async def send_signal(workflow_id: str, value: str) -> str:
     await handle.signal("complete", value)
     return f"Signal sent to {workflow_id}"
 
+
 if __name__ == "__main__":
-    mcp.run(transport='stdio')
+    mcp.run(transport="stdio")

@@ -6,6 +6,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "httpx>=0.28.1",
-    "mcp[cli]>=1.8.1",
-    "temporalio>=1.11.1",
+    "mcp[cli]>=1.9.4",
+    "temporalio>=1.13.0",
 ]

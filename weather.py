@@ -16,13 +16,30 @@ async def get_temporal_client():
 
 @mcp.tool()
 async def get_alerts(state: str) -> str:
-    client = await get_temporal_client()
-    handle = await client.start_workflow(
-        "GetAlertsWorkflow",
-        state,
-        id=f"alerts-{state.lower()}",
-        task_queue="weather-task-queue"
-    )
+     # check if state is a valid US state
+    states = {
+    'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
+    'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA',
+    'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
+    'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
+    'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
+    'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
+    'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH',
+    'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
+    'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT',
+    'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY' }
+
+    if state in states:
+        state_short = states[state]
+        client = await get_temporal_client()
+        handle = await client.start_workflow(
+            "GetAlertsWorkflow",
+            state_short,
+            id=f"alerts-{state.lower()}",
+            task_queue="weather-task-queue"
+        )
+    else:
+        return "This tool only works for US states. Please provide a valid US state."
     return await handle.result()
 
 @mcp.tool()
